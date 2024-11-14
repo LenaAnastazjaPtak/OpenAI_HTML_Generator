@@ -1,6 +1,6 @@
 # OpenAI HTML Generator
 
-A Python application that transforms text-based articles into structured HTML using the OpenAI API. This application generates an HTML structure from the article content, adds designated placeholder images with descriptive prompts, and includes captions, making it easy to enhance the document with images and prepare it for the web.
+A Python application that transforms text-based articles into structured HTML using the OpenAI API. This application generates an HTML structure from the article content, adds designated placeholder images with descriptive prompts, and includes captions, making it easy to enhance the document with images and prepare it for the web. Additionally, it generates an HTML template for article previews. The <body> section is left empty and ready for the article content. This empty template is saved as szablon.html, while a full preview of the article is saved as podglad.html.
 
 ## Features
 
@@ -8,13 +8,7 @@ A Python application that transforms text-based articles into structured HTML us
 - **Image Placeholders**: Inserts `<img>` tags in strategic locations within the article with `src="image_placeholder.jpg"` and descriptive `alt` attributes to suggest suitable images.
 - **Captions for Images**: Adds HTML captions under each placeholder image, allowing easy customization and addition of visuals.
 - **Streamlined Output**: The generated HTML contains only the content between `<body>` tags, making it easy to integrate into existing web templates.
-
-## How It Works
-
-1. **Read the Article**: The application reads article content from a text file (`article.txt`).
-2. **Send to OpenAI**: It sends the article text to the OpenAI API with a prompt to generate an HTML structure, including placeholders for images.
-3. **Generate HTML**: OpenAI responds with an HTML structure, which is then saved as `artykul.html`.
-4. **Placeholder Images**: The generated HTML includes `<img>` tags with `src="image_placeholder.jpg"` and `alt` attributes describing the intended image, making it easy to replace with actual visuals.
+- **HTML Template and Preview Generation**: Creates an HTML template (`szablon.html`) with an empty `<body>` section, ready for article insertion, and generates a complete preview (`podglad.html`) for visualization.
 
 ## Prerequisites
 
