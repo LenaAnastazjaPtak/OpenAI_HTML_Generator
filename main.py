@@ -6,12 +6,18 @@ def read_article(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
     
-def generate(prompt):
+def save_html(file_path, html_content):
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write(html_content)
+    print("Wygenerowano plik: ", file_path)
+    
+def getOpenAIClient():
     load_dotenv()
-    client = OpenAI(
+    return OpenAI(
         api_key = os.getenv("OPENAI_API_KEY"),
     )
 
+def generate(prompt, client):
     chat_completion = client.chat.completions.create(
         messages=[
         {
@@ -24,15 +30,15 @@ def generate(prompt):
 
     return chat_completion.choices[0].message.content
 
-def save_html(file_path, html_content):
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(html_content)
-    print("Wygenerowano plik: ", file_path)
-
 def main():
+    client = getOpenAIClient
     article_text = read_article("article.txt")
 
-    html_template_prompt = ("Wygeneruj szablon HTML z pustym <body>. Nie wyświetlaj tego jako kod HTML tylko jako tekst.")
+    html_template_prompt = (
+        "Wygeneruj szablon HTML z pustym <body>.\n" 
+        "Jego tytuł to 'Szablon'\n" 
+        "Nie wyświetlaj tego jako kod HTML, tylko jako tekst."
+        )
 
     html_content_prompt = (
         "Przygotuj kod dla artykułu zgodnie z następującymi wytycznymi:\n"
@@ -40,16 +46,25 @@ def main():
         "2. W miejscach, gdzie warto umieścić grafikę, użyj tagu <img> z atrybutem src=\"image_placeholder.jpg\".\n"
         "3. Dodaj atrybut alt do każdego obrazka z dokładnym promptem do wygenerowania grafiki.\n"
         "4. Umieść podpisy pod grafikami za pomocą odpowiedniego tagu HTML.\n"
-        "5. Wygeneruj wyłącznie zawartość, którą można umieścić między <body> i </body>, bez użycia znaczników <html>, <head> czy <body>.\n\n"
-        "6. Nie wyświetlaj tego jako kod HTML tylko jako tekst.\n"
+        "5. Wygeneruj wyłącznie zawartość, którą można umieścić między <body> i </body>, bez użycia znaczników <html>, <head> czy <body>.\n"
+        "6. Nie wyświetlaj tego jako kod HTML, tylko jako tekst.\n"
         "Artykuł:\n" + article_text
     )
 
-    html_template = generate(html_template_prompt)
+    html_template = generate(html_template_prompt, client)
     save_html("szablon.html", html_template)
 
-    html_content = generate(html_content_prompt)
+    html_content = generate(html_content_prompt, client)
     save_html("artykul.html", html_content)
+
+    html_preview_prompt = (
+        "Wstaw tekst '" + html_content + "' w znaczniki <body> w tekście '" + html_template + "'. \n"
+        "Bez komentarza.\n" 
+        "Nie wyświetlaj tego jako kod HTML, tylko jako tekst.\n"
+    )
+
+    html_preview = generate(html_preview_prompt, client)
+    save_html("podglad.html", html_preview)
 
 if __name__ == "__main__":
     main()
